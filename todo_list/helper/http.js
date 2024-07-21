@@ -1,38 +1,67 @@
 import axios from 'axios';
 
+
 const BASE_URL = 'http://10.0.0.236:8000/api/todos/';
 
-export async function fetchTodos() {
-    const response = await axios.get(BASE_URL);
+export const fetchTodos = async (authToken) => {
+    const response = await axios.get(BASE_URL, {
+        headers: {
+            Authorization: `Bearer ${authToken}`,
+        },
+    });
     return response.data;
-}
+};
 
-export async function addTodo(todoData) {
-    const response = await axios.post(`${BASE_URL}create/`, todoData);
+export const addTodo = async (authToken, todoData) => {
+    const response = await axios.post(`${BASE_URL}create/`, todoData, {
+        headers: {
+            Authorization: `Bearer ${authToken}`,
+        },
+    });
     return response.data;
-}
+};
 
-export async function updateTodoHttp(id, todoData) {
-    const response = await axios.put(`${BASE_URL}update/${id}/`, todoData);
+export const updateTodoHttp = async (authToken, id, todoData) => {
+    const response = await axios.put(`${BASE_URL}update/${id}/`, todoData, {
+        headers: {
+            Authorization: `Bearer ${authToken}`,
+        },
+    });
     return response.data;
-}
+};
 
-export async function deleteTodoHttp(id) {
-    const response = await axios.delete(`${BASE_URL}delete/${id}/`);
+export const deleteTodoHttp = async (authToken, id) => {
+    const response = await axios.delete(`${BASE_URL}delete/${id}/`, {
+        headers: {
+            Authorization: `Bearer ${authToken}`,
+        },
+    });
     return response.data;
-}
+};
 
-export async function fetchCompletedTodos() {
-    const response = await axios.get(`${BASE_URL}?completed=true`);
+export const fetchCompletedTodos = async (authToken) => {
+    const response = await axios.get(`${BASE_URL}?completed=true`, {
+        headers: {
+            Authorization: `Bearer ${authToken}`,
+        },
+    });
     return response.data;
-}
+};
 
-export async function fetchNotCompletedTodos() {
-    const response = await axios.get(`${BASE_URL}?completed=false`);
+export const fetchNotCompletedTodos = async (authToken) => {
+    const response = await axios.get(`${BASE_URL}?completed=false`, {
+        headers: {
+            Authorization: `Bearer ${authToken}`,
+        },
+    });
     return response.data;
-}
+};
 
-export async function searchTodos(query) {
-    const response = await axios.get(`${BASE_URL}?search=${query}`);
+export const searchTodos = async (authToken, query) => {
+    const response = await axios.get(`${BASE_URL}?search=${query}`, {
+        headers: {
+            Authorization: `Bearer ${authToken}`,
+        },
+    });
     return response.data;
-}
+};

@@ -5,7 +5,9 @@ import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import TodoScreen from "./screens/TodoScreen";
 import TodoForm from "./screens/TodoForm";
 import {TodoContextProvider} from "./store/TodoContext";
-
+import RegisterScreen from './screens/RegisterScreen';
+import LoginScreen from './screens/LoginScreen';
+import {AuthProvider} from "./store/AuthContex";
 
 const Stack = createNativeStackNavigator();
 
@@ -17,32 +19,36 @@ const CustomHeaderTitle = () => (
 );
 
 export default function App() {
-  return (
-      <TodoContextProvider>
-          <NavigationContainer>
-              <Stack.Navigator screenOptions={{
-                  contentStyle: { backgroundColor: '#191919' },
-                  statusBarColor : '#0d0d0d',
-                  headerStyle: { backgroundColor: '#0d0d0d' },
-                  headerTintColor : 'white',
-                  headerTitleAlign: 'center', // Başlık ortalama
-                  headerTitle: props => <CustomHeaderTitle {...props} />
-              }}>
-                  <Stack.Screen name={'Todos'} component={TodoScreen}></Stack.Screen>
-                  <Stack.Screen name={'TodoForm'} component={TodoForm}></Stack.Screen>
-              </Stack.Navigator>
-          </NavigationContainer>
-      </TodoContextProvider>
-  );
+    return (
+        <AuthProvider>
+            <TodoContextProvider>
+                <NavigationContainer>
+                    <Stack.Navigator screenOptions={{
+                        contentStyle: { backgroundColor: '#191919' },
+                        statusBarColor : '#0d0d0d',
+                        headerStyle: { backgroundColor: '#0d0d0d' },
+                        headerTintColor : 'white',
+                        headerTitleAlign: 'center', // Başlık ortalama
+                        headerTitle: props => <CustomHeaderTitle {...props} />
+                    }}>
+                        <Stack.Screen name={'Register'} component={RegisterScreen} />
+                        <Stack.Screen name={'Login'} component={LoginScreen} />
+                        <Stack.Screen name={'Todos'} component={TodoScreen} />
+                        <Stack.Screen name={'TodoForm'} component={TodoForm} />
+                    </Stack.Navigator>
+                </NavigationContainer>
+            </TodoContextProvider>
+        </AuthProvider>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     headerTitle: {
         fontSize: 40,
         fontWeight: 'bold',
@@ -56,11 +62,3 @@ const styles = StyleSheet.create({
         color: '#6455f7', // Mavi renk
     },
 });
-
-
-/*
-<View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
- */

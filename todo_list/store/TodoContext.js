@@ -1,5 +1,7 @@
-import React, { createContext, useReducer, useEffect } from 'react';
+// store/TodoContext.js
+import React, { createContext, useReducer, useEffect, useContext } from 'react';
 import { fetchTodos, addTodo, updateTodoHttp, deleteTodoHttp, fetchCompletedTodos, fetchNotCompletedTodos, searchTodos as searchTodosApi } from "../helper/http";
+import {useAuth} from "./AuthContex";
 
 export const TodoContext = createContext();
 
@@ -19,23 +21,26 @@ const todoReducer = (state, action) => {
 };
 
 export const TodoContextProvider = ({ children }) => {
+    const { authToken } = useAuth();
     const [todos, dispatch] = useReducer(todoReducer, []);
 
     useEffect(() => {
         async function loadTodos() {
+            if (!authToken) return; // authToken yoksa çağrıyı yapma
             try {
-                const todosData = await fetchTodos();
+                const todosData = await fetchTodos(authToken);
                 dispatch({ type: 'SET', payload: todosData });
             } catch (error) {
                 console.error('Failed to load todos:', error);
             }
         }
         loadTodos();
-    }, []);
+    }, [authToken]);
 
     const addTodoItem = async (todoData) => {
+        if (!authToken) return;
         try {
-            const newTodo = await addTodo(todoData);
+            const newTodo = await addTodo(authToken, todoData);
             dispatch({ type: 'ADD', payload: newTodo });
         } catch (error) {
             console.error('Failed to add todo:', error);
@@ -43,8 +48,9 @@ export const TodoContextProvider = ({ children }) => {
     };
 
     const updateTodoItem = async (id, todoData) => {
+        if (!authToken) return;
         try {
-            const updatedTodo = await updateTodoHttp(id, todoData);
+            const updatedTodo = await updateTodoHttp(authToken, id, todoData);
             dispatch({ type: 'UPDATE', payload: updatedTodo });
         } catch (error) {
             console.error('Failed to update todo:', error);
@@ -52,8 +58,9 @@ export const TodoContextProvider = ({ children }) => {
     };
 
     const deleteTodoItem = async (id) => {
+        if (!authToken) return;
         try {
-            await deleteTodoHttp(id);
+            await deleteTodoHttp(authToken, id);
             dispatch({ type: 'DELETE', payload: id });
         } catch (error) {
             console.error('Failed to delete todo:', error);
@@ -61,8 +68,9 @@ export const TodoContextProvider = ({ children }) => {
     };
 
     const loadCompletedTodos = async () => {
+        if (!authToken) return;
         try {
-            const completedTodos = await fetchCompletedTodos();
+            const completedTodos = await fetchCompletedTodos(authToken);
             dispatch({ type: 'SET', payload: completedTodos });
         } catch (error) {
             console.error('Failed to load completed todos:', error);
@@ -70,24 +78,29 @@ export const TodoContextProvider = ({ children }) => {
     };
 
     const loadNotCompletedTodos = async () => {
+        if (!authToken) return;
         try {
-            const notCompletedTodos = await fetchNotCompletedTodos();
+            const notCompletedTodos = await fetchNotCompletedTodos(authToken);
             dispatch({ type: 'SET', payload: notCompletedTodos });
         } catch (error) {
             console.error('Failed to load not completed todos:', error);
         }
     };
-    async function loadAllTodos() {
+
+    const loadAllTodos = async () => {
+        if (!authToken) return;
         try {
-            const todosData = await fetchTodos();
+            const todosData = await fetchTodos(authToken);
             dispatch({ type: 'SET', payload: todosData });
         } catch (error) {
             console.error('Failed to load todos:', error);
         }
-    }
+    };
+
     const searchTodos = async (query) => {
+        if (!authToken) return;
         try {
-            const searchResults = await searchTodosApi(query);
+            const searchResults = await searchTodosApi(authToken, query);
             dispatch({ type: 'SET', payload: searchResults });
         } catch (error) {
             console.error('Failed to search todos:', error);
